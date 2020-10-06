@@ -3,38 +3,32 @@
 
   <div class="task">
     <p>Nowe zadanie: {{ newTask }}</p>
-    
-    <input 
-      type="text" 
-      placeholder="Wprowadz zadanie" 
-      v-model="newTask"
-    >
-    <button 
-     @click="addTask"
-    >Dodaj</button>
+    <input type="text" placeholder="Wprowadz zadanie" v-model="newTask">
+    <button @click="addTask">Dodaj</button>
   </div>
 
-  <div 
-  class="task" 
-  v-bind:class="{
-    completed: task.completed
-  }"
-  v-for="task in tasks" 
-  v-bind:key="task.id"
-  >
-    <h2>{{ task.title }}</h2>
-    <button v-if="!task.completed" @click="removeItem(task.id)">Zrobione</button>
-  </div>
+  <ToDoTask 
+    v-for="task in tasks" 
+    :key="task.id"
+    :item="task"
+    @remove-clicked="removeTask"
+  />
+
 </div>
 </template>
 
 <script>
+import ToDoTask from './ToDoTask.vue'
+
   export default {
+    components: {
+      ToDoTask
+    },
     data() {
       return {
         newTask: '',
         tasks: [
-          { title: 'Umyć samochód', completed: true, id: 1 },
+          { title: 'Umyć samochód', completed: false, id: 1 },
           { title: 'Wyprowadzić psa', completed: false, id: 2 }
         ]
       }
@@ -48,7 +42,7 @@
         })
         this.newTask = ''
       },
-      removeItem(id) {
+      removeTask(id) {
         const index = this.tasks.findIndex(el => el.id === id)
         this.tasks[index].completed = true
       }
